@@ -20,4 +20,4 @@
 
 .env
 /vendor/bundle
-
+/vendor/bundler
