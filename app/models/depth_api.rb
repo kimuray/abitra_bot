@@ -6,7 +6,6 @@ class DepthApi
   end
 
   def request_depth_info
-    uri = URI.parse(target_url)
     response = Net::HTTP.get_response(URI.parse(target_url))
     transrate_json(response)
   end
@@ -35,5 +34,13 @@ class DepthApi
       Rails.logger.error(e.message)
       railse(e)
     end
+  end
+
+  def request_bitflyer
+    result = {}
+    depth_json = request_depth_info
+    result.store('bids', depth_json['bids'].map { |item| [item['price'], item['size']] })
+    result.store('asks', depth_json['asks'].map { |item| [item['price'], item['size']] })
+    result
   end
 end
