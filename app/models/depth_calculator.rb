@@ -31,12 +31,15 @@ class DepthCalculator
     asks_key, asks_value = sort_asks.shift
     return if asks_key == bids_key
     return if (bids_value - asks_value) < 5_000
-    puts "#{asks_key}で#{asks_value}円買って、#{bids_key}で#{bids_value}円で売ると#{bids_value - asks_value}円お得っぽい"
+    "#{asks_key}で#{asks_value}円買って、#{bids_key}で#{bids_value}円で売ると#{bids_value - asks_value}円お得っぽい"
   end
 
   def self.loop_execute
     loop do
-      self.new.difference
+      result = self.new.difference
+      next if result.blank?
+      notifier = Slack::Notifier.new(ENV['SLACK_HOOK_URL'])
+      notifier.ping(result)
       sleep 5
     end
   end
